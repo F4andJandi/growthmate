@@ -40,7 +40,7 @@ public class CourseService {
         return CourseDetailResponse.from(newCourse);
     }
 
-    public Optional<Course> getCourse(int courseId) {
+    public Optional<Course> getCourse(Long courseId) {
         return courseRepository.findById(courseId);
     }
 
@@ -50,7 +50,7 @@ public class CourseService {
                 .toList();
     }
 
-    public CourseDetailResponse update(int course_id, CourseEdit courseEdit) {
+    public CourseDetailResponse update(Long course_id, CourseEdit courseEdit) {
         Course course = courseRepository.findById(course_id)
                 .orElseThrow(() -> new CourseNotFound("Course not found with id: " + course_id));
 
@@ -60,7 +60,7 @@ public class CourseService {
         return CourseDetailResponse.from(course);
     }
 
-    public void deleteCourse(int course_id) {
+    public void deleteCourse(Long course_id) {
         Optional<Course> findCourse = courseRepository.findById(course_id);
         if (findCourse.isPresent()) {
             courseRepository.deleteById(course_id);
