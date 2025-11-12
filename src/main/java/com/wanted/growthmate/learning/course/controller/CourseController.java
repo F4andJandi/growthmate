@@ -4,12 +4,14 @@ import com.wanted.growthmate.category.dto.CategoryResponse;
 import com.wanted.growthmate.learning.course.domain.dto.CourseCreateRequest;
 import com.wanted.growthmate.learning.course.domain.dto.CourseDetailResponse;
 import com.wanted.growthmate.learning.course.domain.dto.TutorCourseSummaryResponse;
+import com.wanted.growthmate.learning.course.domain.entity.Course;
 import com.wanted.growthmate.learning.course.service.CourseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CourseController {
@@ -38,6 +40,19 @@ public class CourseController {
         return "tutor-course-list";
     }
 
+    @PostMapping("/tutor/courses")
+    public String createTutorCourse(@ModelAttribute("form") CourseCreateRequest request) {
+        courseService.createCourse(
+                1L,
+                request.getCategoryId(),
+                request.getTitle(),
+                request.getDescription(),
+                request.getImageUrl(),
+                request.getPointAmount()
+        );
+        return "redirect:/tutor/courses";
+    }
+
     @GetMapping("/tutor/courses/new")
     public String newTutorCourse(Model model) {
         //GET으로 폼을 열 때에도 **폼-백킹 DTO(빈 값)**를 model에 넣어두면 th:object/*{...} 바인딩이 안전하게 동작하고,
@@ -45,8 +60,15 @@ public class CourseController {
         model.addAttribute("form", new CourseCreateRequest());
 
         List<CategoryResponse> categories = courseService.getAllCategories();
-        model.addAttribute("category", categories);
+        model.addAttribute("categories", categories);
         return "course-new";
     }
 
+    /*@GetMapping("/tutor/courses/{id}/edit")
+    public String editTutorCourse(@PathVariable Long id, Model model) {
+        //수정 폼DTO를 받아야함.
+        model.addAttribute("course", courseService.getCourse(id));
+        model.addAttribute("categories", courseService.getAllCategories());
+        return "course-new";
+    }*/
 }
