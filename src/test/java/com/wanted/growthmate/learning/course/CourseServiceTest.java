@@ -49,7 +49,7 @@ class CourseServiceTest {
 
         courseService.createCourse(dto.getUserId(), dto.getCategoryId(), dto.getTitle(), dto.getDescription(), dto.getImageUrl(), dto.getPointAmount());
 
-        Optional<Course> findCourse = courseService.getCourse(1);
+        Optional<Course> findCourse = courseService.getCourse(1L);
         assertThat(findCourse).isPresent();
         Course course = findCourse.get();
         assertThat(course.getTitle()).isEqualTo("강좌 제목");
@@ -105,7 +105,7 @@ class CourseServiceTest {
                 .pointAmount(200L)// 200P
                 .build();
 
-        CourseDetailResponse updatedCourse = courseService.update(1, courseEdit);
+        CourseDetailResponse updatedCourse = courseService.update(1L, courseEdit);
         org.junit.jupiter.api.Assertions.assertEquals(updatedCourse.getTitle(), "강좌 수정");
     }
 
@@ -121,8 +121,8 @@ class CourseServiceTest {
                 .build();
         courseService.createCourse(dto.getUserId(), dto.getCategoryId(), dto.getTitle(), dto.getDescription(), dto.getImageUrl(), dto.getPointAmount());
 
-        courseService.deleteCourse(1);
-        assertThat(courseService.getCourse(1)).isEmpty();
+        courseService.deleteCourse(1L);
+        assertThat(courseService.getCourse(1L)).isEmpty();
     }
 
     @Test
