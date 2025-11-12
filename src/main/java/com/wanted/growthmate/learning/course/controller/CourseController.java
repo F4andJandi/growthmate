@@ -1,6 +1,7 @@
 package com.wanted.growthmate.learning.course.controller;
 
 import com.wanted.growthmate.category.dto.CategoryResponse;
+import com.wanted.growthmate.learning.course.domain.dto.CourseCreateRequest;
 import com.wanted.growthmate.learning.course.domain.dto.CourseDetailResponse;
 import com.wanted.growthmate.learning.course.domain.dto.TutorCourseSummaryResponse;
 import com.wanted.growthmate.learning.course.service.CourseService;
@@ -35,6 +36,17 @@ public class CourseController {
         List<TutorCourseSummaryResponse> tutorCourses = courseService.getTutorCourses();
         model.addAttribute("courses", tutorCourses);
         return "tutor-course-list";
+    }
+
+    @GetMapping("/tutor/courses/new")
+    public String newTutorCourse(Model model) {
+        //GET으로 폼을 열 때에도 **폼-백킹 DTO(빈 값)**를 model에 넣어두면 th:object/*{...} 바인딩이 안전하게 동작하고,
+        // 이후 검증 실패 시 메시지 복원(POST-Redirect-GET)도 깔끔해집니다.
+        model.addAttribute("form", new CourseCreateRequest());
+
+        List<CategoryResponse> categories = courseService.getAllCategories();
+        model.addAttribute("category", categories);
+        return "course-new";
     }
 
 }
