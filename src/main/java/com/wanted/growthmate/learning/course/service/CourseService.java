@@ -41,8 +41,11 @@ public class CourseService {
         return CourseDetailResponse.from(newCourse);
     }
 
-    public Optional<Course> getCourse(Long courseId) {
-        return courseRepository.findById(courseId);
+    public CourseDetailResponse getCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFound("Course not found with id: " + courseId));
+
+        return CourseDetailResponse.from(course);
     }
 
     public List<CourseDetailResponse> getCourses() {
