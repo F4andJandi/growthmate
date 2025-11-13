@@ -54,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<UserResponseDto> findUserById(
             @PathVariable("id") Long id,
             @Login AuthUser authUser) {
