@@ -1,5 +1,8 @@
 package com.wanted.growthmate.learning.course.domain.entity;
 
+import com.wanted.growthmate.common.entity.BaseEntity;
+import com.wanted.growthmate.common.entity.BaseTimeEntity;
+import com.wanted.growthmate.common.entity.SoftDeleteBaseEntity;
 import com.wanted.growthmate.learning.course.domain.model.CourseEdit;
 import com.wanted.growthmate.learning.course.domain.model.CourseState;
 import jakarta.persistence.*;
@@ -14,10 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor //new Course가 완전히 없어지면 없애도됨
 @Entity
 @Table(name = "course")
-public class Course {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Course extends SoftDeleteBaseEntity {
 
     @Column(nullable = false)
     private String title;
@@ -35,17 +35,12 @@ public class Course {
     private Long pointAmount;
 
     @Column(name = "course_state", nullable = false)
+    @Enumerated(EnumType.STRING)
     private CourseState courseState;
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
+    
     public Course() {}
 
     public void editCourse(CourseEdit courseEdit) {

@@ -26,14 +26,14 @@ public class CourseService {
         this.categoryRepository = categoryRepository;
     }
 
-    public CourseDetailResponse createCourse(Long instructorId, Long courseCategoryId, String courseTitle, String courseDescription, String courseImageUrl, Long coursePointAmount) {
+    public CourseDetailResponse createCourse(String action, Long instructorId, Long courseCategoryId, String courseTitle, String courseDescription, String courseImageUrl, Long coursePointAmount) {
         Course newCourse = Course.builder()
                 .userId(instructorId)
                 .categoryId(courseCategoryId)
                 .title(courseTitle)
                 .description(courseDescription)
                 .pointAmount(coursePointAmount)
-                .courseState(CourseState.DRAFT)
+                .courseState(CourseState.valueOf(action))
                 .imageUrl(courseImageUrl)
                 .build();
 
@@ -41,8 +41,11 @@ public class CourseService {
         return CourseDetailResponse.from(newCourse);
     }
 
-    public Optional<Course> getCourse(Long courseId) {
-        return courseRepository.findById(courseId);
+    public CourseDetailResponse getCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFound("Course not found with id: " + courseId));
+
+        return CourseDetailResponse.from(course);
     }
 
     public List<CourseDetailResponse> getCourses() {
@@ -62,10 +65,9 @@ public class CourseService {
     }
 
     public void deleteCourse(Long courseId) {
-        Optional<Course> findCourse = courseRepository.findById(courseId);
-        if (findCourse.isPresent()) {
-            courseRepository.deleteById(courseId);
-        }
+        Course findCourse = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFound("Course not found with id: " + courseId));
+        findCourse.markDeleted();
     }
 
     public List<CategoryResponse> getAllCategories() {
