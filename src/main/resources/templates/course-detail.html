@@ -41,18 +41,18 @@
         <div class="text-end">
 
             <!-- 로그인 전 또는 구매 전: 수강신청 -->
-            <button type="button"
-                    class="btn btn-primary"
-                    th:if="${!loggedIn} or ${!purchased}">
+            <a class="btn btn-primary"
+               th:if="${!loggedIn or !purchased}"
+               th:href="@{/courses/{id}/enroll(id=${course.id})}">
                 수강신청
-            </button>
+            </a>
 
             <!-- 로그인 후 + 구매 후: 이어보기 -->
-            <button type="button"
+            <!--<button type="button"
                     class="btn btn-success"
                     th:if="${loggedIn} and ${purchased}">
                 이어보기
-            </button>
+            </button>-->
         </div>
     </div>
 
@@ -110,11 +110,11 @@
 
                     <!-- 버튼: 요약 카드에서도 동일 정책 -->
                     <div class="d-grid gap-2">
-                        <button type="button"
-                                class="btn btn-primary"
-                                th:if="${!loggedIn or !purchased}">
+                        <a class="btn btn-primary"
+                           th:if="${!loggedIn or !purchased}"
+                           th:href="@{/courses/{id}/enroll(id=${course.id})}">
                             수강신청
-                        </button>
+                        </a>
 
                         <button type="button"
                                 class="btn btn-success"
