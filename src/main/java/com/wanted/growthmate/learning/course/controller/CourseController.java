@@ -1,11 +1,15 @@
 package com.wanted.growthmate.learning.course.controller;
 
 import com.wanted.growthmate.category.dto.CategoryResponse;
+import com.wanted.growthmate.enrollment.dto.EnrollmentRequest;
+import com.wanted.growthmate.enrollment.dto.EnrollmentResponse;
+import com.wanted.growthmate.enrollment.entity.Enrollment;
 import com.wanted.growthmate.enrollment.service.EnrollmentService;
 import com.wanted.growthmate.learning.course.domain.dto.CourseCreateRequest;
 import com.wanted.growthmate.learning.course.domain.dto.CourseDetailResponse;
 import com.wanted.growthmate.learning.course.domain.dto.CourseEditRequest;
 import com.wanted.growthmate.learning.course.domain.dto.InstructorCourseSummaryResponse;
+import com.wanted.growthmate.learning.course.domain.entity.Course;
 import com.wanted.growthmate.learning.course.service.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -14,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CourseController {
@@ -38,7 +43,16 @@ public class CourseController {
     // 강좌 상세
     @GetMapping("/courses/{id}")
     public String getCourseDetails(@PathVariable long id, Model model) {
-        //수강 progress
+        CourseDetailResponse course = courseService.getCourse(id);
+
+        // 로그인 구현 전: 항상 로그인 안 된 것으로 간주
+        boolean loggedIn = false;
+        boolean purchased = false;
+
+        model.addAttribute("course",  course);
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("purchased", purchased);
+
         return "course-detail";
     }
 
@@ -97,5 +111,15 @@ public class CourseController {
     public String deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
         return "redirect:/instructor/courses";
+    }
+
+    // 수강 신청
+    @GetMapping("/courses/{id}/enroll")
+    public String getCourseEnrollPage(@PathVariable Long id) {
+        //임의 사용자
+        Long userId = 1L;
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(id, userId);
+        enrollmentService.createEnrollment(enrollmentRequest);
+        return "redirect:/courses/{id}/enroll";
     }
 }
