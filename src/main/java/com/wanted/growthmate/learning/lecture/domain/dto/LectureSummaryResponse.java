@@ -23,8 +23,8 @@ public class LectureSummaryResponse {
     public static LectureSummaryResponse from(Lecture lecture) {
         return LectureSummaryResponse.builder()
                 .lectureId(lecture.getId())
-                .courseId(lecture.getCourseId())
-                .sectionId(lecture.getSectionId())
+                .courseId(lecture.getSection().getCourse().getId())
+                .sectionId(lecture.getSection().getId())
                 .title(lecture.getTitle())
                 .duration(lecture.getDuration())
                 .mediaId(lecture.getMediaId())

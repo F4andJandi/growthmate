@@ -9,9 +9,6 @@ import lombok.Getter;
 @Builder
 public class LectureCreateRequest {
 
-    @NotNull(message = "courseId는 필수 입력 값입니다.")
-    private Long courseId;
-
     @NotNull(message = "sectionId는 필수 입력 값입니다.")
     private Long sectionId;
 
@@ -32,18 +29,5 @@ public class LectureCreateRequest {
 
     @Builder.Default
     private boolean isVisible = true;
-
-    public Lecture toEntity() {
-        return Lecture.builder()
-                .courseId(courseId)
-                .sectionId(sectionId)
-                .title(title)
-                .duration(duration)
-                .mediaId(mediaId)
-                .displayOrder(order)
-                .isVisible(isVisible)
-                .build();
-    }
-
 
 }

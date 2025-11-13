@@ -1,10 +1,9 @@
 package com.wanted.growthmate.learning.section.domain.entity;
 
 import com.wanted.growthmate.common.entity.SoftDeleteBaseEntity;
+import com.wanted.growthmate.learning.course.domain.entity.Course;
 import com.wanted.growthmate.learning.section.domain.dto.SectionUpdateRequest;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +16,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Section extends SoftDeleteBaseEntity {
 
-    @Column(name = "course_id", nullable = false)
-    @Comment("강좌 ID")
-    private Long courseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    @Comment("강좌")
+    private Course course;
 
     @Column(nullable = false)
     @Comment("섹션 제목 (챕터명)")

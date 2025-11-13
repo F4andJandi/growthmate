@@ -22,14 +22,5 @@ public class SectionCreateRequest {
     @Builder.Default
     private boolean isVisible = true;
 
-    public Section toEntity() {
-        return Section.builder()
-                .courseId(courseId)
-                .title(title)
-                .displayOrder(order)
-                .isVisible(isVisible)
-                .build();
-    }
-
 }
 

@@ -19,8 +19,8 @@ public class LectureResponse {
     public static LectureResponse from(Lecture lecture) {
         return LectureResponse.builder()
                 .lectureId(lecture.getId())
-                .courseId(lecture.getCourseId())
-                .sectionId(lecture.getSectionId())
+                .courseId(lecture.getSection().getCourse().getId())
+                .sectionId(lecture.getSection().getId())
                 .title(lecture.getTitle())
                 .duration(lecture.getDuration())
                 .order(lecture.getDisplayOrder())

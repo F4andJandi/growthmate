@@ -15,7 +15,7 @@ public class SectionSummaryResponse {
     public static SectionSummaryResponse from(Section section) {
         return SectionSummaryResponse.builder()
                 .sectionId(section.getId())
-                .courseId(section.getCourseId())
+                .courseId(section.getCourse().getId())
                 .title(section.getTitle())
                 .order(section.getDisplayOrder())
                 .build();

@@ -39,7 +39,6 @@ public class LectureController {
     @PostMapping
     public String create(@PathVariable Long sectionId, @Valid @ModelAttribute LectureCreateRequest request, RedirectAttributes redirectAttributes) {
         request = LectureCreateRequest.builder()
-                .courseId(request.getCourseId())
                 .sectionId(sectionId)
                 .title(request.getTitle())
                 .duration(request.getDuration())
