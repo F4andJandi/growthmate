@@ -32,7 +32,7 @@
 
             <!-- 로그인 후 + 구매 후: 수강중 뱃지 -->
             <span class="badge bg-success badge-status mt-2"
-                  th:if="${#request.userPrincipal != null and purchased}">
+                  th:if="${loggedIn} and ${purchased}">
                 수강중
             </span>
         </div>
@@ -43,14 +43,14 @@
             <!-- 로그인 전 또는 구매 전: 수강신청 -->
             <button type="button"
                     class="btn btn-primary"
-                    th:if="${#request.userPrincipal == null or !purchased}">
+                    th:if="${!loggedIn} or ${!purchased}">
                 수강신청
             </button>
 
             <!-- 로그인 후 + 구매 후: 이어보기 -->
             <button type="button"
                     class="btn btn-success"
-                    th:if="${#request.userPrincipal != null and purchased}">
+                    th:if="${loggedIn} and ${purchased}">
                 이어보기
             </button>
         </div>
@@ -65,7 +65,8 @@
             </p>
 
             <!-- 로그인 전 + 구매 전일 때만: 강의 시간 정보 노출 -->
-            <div class="mt-4" th:if="${#request.userPrincipal == null or !purchased}">
+            <div class="mt-4"
+                 th:if="${(!loggedIn or !purchased) and (lecture != null)}">
                 <h3 class="h6 mb-2">강의 정보</h3>
                 <ul class="list-unstyled mb-0">
                     <li>
@@ -93,16 +94,16 @@
                         <dd class="col-8" th:text="${course.userId}">instructorId</dd>
 
                         <!-- 로그인 전/구매 전: duration 표기 -->
-                        <div th:if="${#request.userPrincipal == null or !purchased}">
+                        <th:block th:if="${(!loggedIn or !purchased) and (lecture != null)}">
                             <dt class="col-4">강의 시간</dt>
                             <dd class="col-8" th:text="${lecture.duration}">00:00:00</dd>
-                        </div>
+                        </th:block>
 
                         <!-- 로그인 후 + 구매 후: 상태만 보여줌 -->
-                        <div th:if="${#request.userPrincipal != null and purchased}">
+                        <th:block th:if="${loggedIn} and ${purchased}">
                             <dt class="col-4">상태</dt>
                             <dd class="col-8 text-success">수강중</dd>
-                        </div>
+                        </th:block>
                     </dl>
 
                     <hr/>
@@ -111,13 +112,13 @@
                     <div class="d-grid gap-2">
                         <button type="button"
                                 class="btn btn-primary"
-                                th:if="${#request.userPrincipal == null or !purchased}">
+                                th:if="${!loggedIn or !purchased}">
                             수강신청
                         </button>
 
                         <button type="button"
                                 class="btn btn-success"
-                                th:if="${#request.userPrincipal != null and purchased}">
+                                th:if="${loggedIn and purchased}">
                             이어보기
                         </button>
                     </div>
