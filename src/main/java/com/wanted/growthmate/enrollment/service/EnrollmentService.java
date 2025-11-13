@@ -66,9 +66,14 @@ public class EnrollmentService {
 
         Enrollment enrollment = new Enrollment(user, course);
         enrollment.setOrderNum(newOrderNum);
-        pointService.transferEnrollmentPoints(enrollment);
+        
+        // Enrollment를 먼저 저장하여 ID를 생성 (EnrollmentTransaction에서 참조하기 위해)
+        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+        
+        // 저장된 Enrollment를 사용하여 포인트 거래 처리
+        pointService.transferEnrollmentPoints(savedEnrollment);
 
-        return enrollmentRepository.save(enrollment);
+        return savedEnrollment;
     }
 
     // userId로 수강중인 목록 조회

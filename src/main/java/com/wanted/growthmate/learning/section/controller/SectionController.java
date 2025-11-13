@@ -1,5 +1,6 @@
 package com.wanted.growthmate.learning.section.controller;
 
+import com.wanted.growthmate.learning.course.service.CourseService;
 import com.wanted.growthmate.learning.lecture.domain.dto.LectureSummaryResponse;
 import com.wanted.growthmate.learning.lecture.service.LectureService;
 import com.wanted.growthmate.learning.section.domain.dto.*;
@@ -18,18 +19,27 @@ public class SectionController {
 
     private final SectionService sectionService;
     private final LectureService lectureService;
+    private final CourseService courseService;
 
-    public SectionController(SectionService sectionService, LectureService lectureService) {
+    public SectionController(SectionService sectionService, LectureService lectureService, CourseService courseService) {
         this.sectionService = sectionService;
         this.lectureService = lectureService;
+        this.courseService = courseService;
     }
 
     @GetMapping
     public String list(@RequestParam(required = false) Long courseId, Model model) {
         if (courseId != null) {
             List<SectionSummaryResponse> sections = sectionService.findByCourseId(courseId);
+            
+            // 강좌 작성자 ID 조회
+            com.wanted.growthmate.learning.course.domain.entity.Course course = 
+                    courseService.getCourseById(courseId);
+            Long courseUserId = course.getUserId();
+            
             model.addAttribute("sections", sections);
             model.addAttribute("courseId", courseId);
+            model.addAttribute("courseUserId", courseUserId);
         }
         return "section/list";
     }
@@ -38,8 +48,15 @@ public class SectionController {
     public String detail(@PathVariable Long sectionId, Model model) {
         SectionResponse section = sectionService.findBySectionId(sectionId);
         List<LectureSummaryResponse> lectures = lectureService.findBySectionId(sectionId);
+        
+        // 강좌 작성자 ID 조회
+        com.wanted.growthmate.learning.course.domain.entity.Course course = 
+                courseService.getCourseById(section.getCourseId());
+        Long courseUserId = course.getUserId();
+        
         model.addAttribute("section", section);
         model.addAttribute("lectures", lectures);
+        model.addAttribute("courseUserId", courseUserId);
         return "section/detail";
     }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>섹션 상세 - [[${section.title}]]</title>
+    <title>강의 목록 - [[${section.title}]]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
@@ -49,14 +49,8 @@
                     <i class="bi bi-bookmark"></i> [[${section.title}]]
                 </h4>
                 <div>
-                    <button class="btn btn-sm btn-outline-primary" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#editSectionModal"
-                            th:if="${loginUserId != null and loginUserId == courseUserId}">
-                        <i class="bi bi-pencil"></i> 수정
-                    </button>
                     <a th:href="@{/sections?courseId={id}(id=${section.courseId})}" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> 목록
+                        <i class="bi bi-arrow-left"></i> 섹션 목록
                     </a>
                 </div>
             </div>
@@ -127,14 +121,13 @@
     <div class="modal fade" id="createLectureModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form th:action="@{/sections/{sectionId}/lectures(sectionId=${section.sectionId})}" method="post">
+                <form th:action="@{/sections/{sectionId}/lectures(sectionId=${sectionId})}" method="post">
                     <div class="modal-header">
                         <h5 class="modal-title"><i class="bi bi-plus-circle"></i> 강의 생성</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="courseId" th:value="${section.courseId}">
-                        <input type="hidden" name="sectionId" th:value="${section.sectionId}">
+                        <input type="hidden" name="sectionId" th:value="${sectionId}">
                         <div class="mb-3">
                             <label class="form-label">강의 제목</label>
                             <input type="text" class="form-control" name="title" required>
@@ -218,7 +211,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="sectionId" th:value="${section.sectionId}">
+                        <input type="hidden" name="sectionId" th:value="${sectionId}">
                         <div class="mb-3">
                             <label class="form-label">변경할 순서</label>
                             <input type="number" class="form-control" name="newOrder" id="newOrder" min="1" required>
@@ -234,40 +227,9 @@
         </div>
     </div>
 
-    <!-- 섹션 수정 모달 -->
-    <div class="modal fade" id="editSectionModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form th:action="@{/sections/{sectionId}/update(sectionId=${section.sectionId})}" method="post">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="bi bi-pencil"></i> 섹션 수정</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">섹션 제목</label>
-                            <input type="text" class="form-control" name="title" th:value="${section.title}" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="hidden" name="isVisible" value="false">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="isVisible" value="true" th:checked="${section.isVisible}">
-                                <label class="form-check-label">노출 활성화</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="submit" class="btn btn-primary">수정</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
-        const sectionId = /*[[${section.sectionId}]]*/ null;
+        const sectionId = /*[[${sectionId}]]*/ null;
         const lectures = /*[[${lectures}]]*/ [];
 
         function openEditModal(lectureId) {
@@ -307,4 +269,3 @@
     </script>
 </body>
 </html>
-

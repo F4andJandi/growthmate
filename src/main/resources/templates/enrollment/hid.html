@@ -19,34 +19,45 @@
     
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 th:text="${userId} + '님의 숨김 강좌 목록'">숨김 강좌 목록</h1>
-            <a href="/enrollment/myList" class="btn btn-outline-secondary">
+            <div>
+                <h1 class="mb-1">숨김 강좌</h1>
+                <p class="text-muted mb-0" th:text="'숨김 처리된 강좌 ' + ${#lists.size(enrollments)} + '개'">
+                    숨김 처리된 강좌 0개
+                </p>
+            </div>
+            <a th:href="@{/myc}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> 돌아가기
             </a>
         </div>
 
-        <div class="card">
+        <!-- 강좌가 없는 경우 -->
+        <div th:if="${#lists.isEmpty(enrollments)}" class="text-center py-5 text-muted border rounded bg-white">
+            <i class="bi bi-eye-slash" style="font-size: 3rem;"></i>
+            <p class="mt-3">숨김 처리된 강좌가 없습니다.</p>
+        </div>
+
+        <!-- 숨김 강좌 리스트 -->
+        <div class="card" th:if="${!#lists.isEmpty(enrollments)}">
             <div class="card-body">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-center" 
                         th:each="enroll : ${enrollments}">
                         <div>
+                            <span class="badge bg-secondary me-2">숨김</span>
                             <span th:text="${enroll.course.title}">강좌명</span>
                         </div>
                         <div class="btn-group">
-                            <a th:href="@{|/sections?courseId=${enroll.course.id}|}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-arrow-right-circle"></i> 강좌 선택
-                            </a>
-                            <form th:action="@{/enrollment/restore}" method="post" style="display:inline;">
+                            <form th:action="@{/restore}" method="post" style="display:inline;">
                                 <input type="hidden" name="enrollmentId" th:value="${enroll.id}">
-                                <button type="submit" class="btn btn-sm btn-outline-success">
-                                    <i class="bi bi-arrow-counterclockwise"></i> 복구
+                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-arrow-clockwise"></i> 복원
                                 </button>
                             </form>
+                            <a th:href="@{|/sections?courseId=${enroll.course.id}|}" 
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-arrow-right-circle"></i> 보기
+                            </a>
                         </div>
-                    </li>
-                    <li class="list-group-item text-center text-muted" th:if="${#lists.isEmpty(enrollments)}">
-                        <i class="bi bi-inbox"></i> 숨김 강좌가 없습니다.
                     </li>
                 </ul>
             </div>

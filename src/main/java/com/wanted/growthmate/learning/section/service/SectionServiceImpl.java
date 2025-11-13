@@ -28,9 +28,7 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public SectionResponse save(SectionCreateRequest sectionCreateRequest) {
-        Course course = courseService.getCourse(sectionCreateRequest.getCourseId())
-                .orElseThrow(() -> new NoSuchElementException("아이디에 해당하는 코스가 존재하지 않습니다."));
-        
+        Course course = courseService.getCourseById(sectionCreateRequest.getCourseId());
         Section section = Section.builder()
                 .course(course)
                 .title(sectionCreateRequest.getTitle())

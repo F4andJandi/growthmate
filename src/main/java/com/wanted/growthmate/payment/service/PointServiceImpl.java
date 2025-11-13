@@ -58,12 +58,9 @@ public class PointServiceImpl implements PointService {
         Long instructorId = enrollment.getCourse().getUserId();
         int coursePrice = enrollment.getCourse().getPointAmount().intValue();
 
-        // 1. 학생/강사 Point 원장 조회
-        Point studentPoint = pointRepository.findByUserId(studentId)
-                .orElseThrow(() -> new PointNotFoundException(studentId));
-
-        Point instructorPoint = pointRepository.findByUserId(instructorId)
-                .orElseThrow(() -> new PointNotFoundException(instructorId));
+        // 1. 학생/강사 Point 원장 조회 (없으면 생성) - getOrCreatePoint 사용으로 일관성 유지
+        Point studentPoint = getOrCreatePoint(studentId);
+        Point instructorPoint = getOrCreatePoint(instructorId);
 
         // 2. 학생 포인트 잔액 검증
         if (studentPoint.getBalance() < coursePrice) {

@@ -48,8 +48,19 @@ public class CourseService {
         return CourseDetailResponse.from(course);
     }
 
+    public Course getCourseById(Long courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFound("Course not found with id: " + courseId));
+    }
+
     public List<CourseDetailResponse> getCourses() {
         return courseRepository.findAll().stream()
+                .map(CourseDetailResponse::from)
+                .toList();
+    }
+
+    public List<CourseDetailResponse> getCoursesByCategory(Long categoryId) {
+        return courseRepository.findByCategoryId(categoryId).stream()
                 .map(CourseDetailResponse::from)
                 .toList();
     }

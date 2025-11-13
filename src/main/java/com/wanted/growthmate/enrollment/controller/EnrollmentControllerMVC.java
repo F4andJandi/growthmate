@@ -1,20 +1,20 @@
 package com.wanted.growthmate.enrollment.controller;
 
-import com.wanted.growthmate.enrollment.dto.EnrollmentCreateRequest;
-import com.wanted.growthmate.enrollment.dto.EnrollmentResponse;
+
 import com.wanted.growthmate.enrollment.entity.Enrollment;
 import com.wanted.growthmate.enrollment.entity.Status;
 import com.wanted.growthmate.enrollment.service.EnrollmentService;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/enrollment")
 public class EnrollmentControllerMVC {
 
     private EnrollmentService enrollmentService;
@@ -24,78 +24,70 @@ public class EnrollmentControllerMVC {
         this.enrollmentService = enrollmentService;
     }
 
-    @GetMapping("/myList")
-    public String myEnrollments(Model model) {
-        Long userId = 1L;   // userId를 어디서 받음?
+    @GetMapping("/myc")
+    public String myCourses(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("loginUserId");
+        if (userId == null) {
+            // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+            return "redirect:/login";
+        }
+        
         Status status = Status.ACTIVE;
         List<Enrollment> enrollments = enrollmentService.findEnrollmentByUserId(userId, status);
 
         model.addAttribute("userId", userId);
-        model.addAttribute("enrollments",enrollments);
-        return "enrollment/enrollments";
+        model.addAttribute("enrollments", enrollments);
+        return "enrollment/my";
     }
 
     @GetMapping("/edit")
-    public String editEnrollment(Model model) {
-        Long userId = 1L;   // userId를 어디서 받음?
+    public String editEnrollment(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("loginUserId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
         Status status = Status.ACTIVE;
-        List<Enrollment> enrollments = enrollmentService.findEnrollmentByUserId(userId,status);
-        model.addAttribute("enrollments",enrollments);
-        return "enrollment/edit";
-    }
-
-    @GetMapping("/hiddenList")
-    public String showHiddenEnrollment(Model model) {
-        Long userId = 1L;
-        Status status = Status.HIDDEN;
-        List<Enrollment> hiddenEnrollments = enrollmentService.findEnrollmentByUserId(userId,status);
-        model.addAttribute("enrollments",hiddenEnrollments);
-        model.addAttribute("userId", userId);
-        return "enrollment/hide";
-    }
-
-    // 테스트 용
-    @ResponseBody
-    @PostMapping("/addEnrollment")
-    public EnrollmentResponse addEnrollment(@RequestBody @Valid EnrollmentCreateRequest request) {
-        Enrollment enrollment = enrollmentService.createEnrollment(request);
-        EnrollmentResponse enrollmentResponse = new EnrollmentResponse(enrollment);
-        return enrollmentResponse;
+        List<Enrollment> enrollments = enrollmentService.findEnrollmentByUserId(userId, status);
+        model.addAttribute("enrollments", enrollments);
+        return "enrollment/editt";
     }
 
     @PostMapping("/change-order")
     public String changeOrder(@RequestParam Long enrollmentId, @RequestParam Long newOrderNum) {
-        if (enrollmentId == null || newOrderNum == null) {
-            throw new IllegalArgumentException("순서 변경에 문제가 발생");
-        }
         enrollmentService.changeOrder(enrollmentId, newOrderNum);
-        return "redirect:/enrollment/edit";
+        return "redirect:/edit";
     }
 
     @PostMapping("/hide")
     public String hideEnrollment(@RequestParam Long enrollmentId) {
-        if (enrollmentId == null) {
-            throw new IllegalArgumentException("강좌를 숨기는데 문제가 발생했습니다.");
-        }
         enrollmentService.updateEnrollmentStatus(enrollmentId, Status.HIDDEN);
-        return "redirect:/enrollment/edit";
+        return "redirect:/edit";
+    }
+
+    @GetMapping("/hidden")
+    public String showHiddenEnrollment(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("loginUserId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        Status status = Status.HIDDEN;
+        List<Enrollment> hiddenEnrollments = enrollmentService.findEnrollmentByUserId(userId, status);
+        model.addAttribute("enrollments", hiddenEnrollments);
+        model.addAttribute("userId", userId);
+        return "enrollment/hid";
     }
 
     @PostMapping("/restore")
     public String restoreEnrollment(@RequestParam Long enrollmentId) {
-        if (enrollmentId == null) {
-            throw new IllegalArgumentException("복구에 문제 발생");
-        }
         enrollmentService.updateEnrollmentStatus(enrollmentId, Status.ACTIVE);
-        return "redirect:/enrollment/hidden";
+        return "redirect:/edit";
     }
 
     @PostMapping("/refund")
     public String refundEnrollment(@RequestParam Long enrollmentId) {
-        if (enrollmentId == null) {
-            throw new IllegalArgumentException("환불에 문제 발생");
-        }
         enrollmentService.updateEnrollmentStatus(enrollmentId, Status.REFUNDED);
-        return "redirect:/enrollment/edit";
+        return "redirect:/edit";
     }
 }

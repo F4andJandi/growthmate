@@ -6,7 +6,6 @@ import com.wanted.growthmate.enrollment.entity.Enrollment;
 import com.wanted.growthmate.enrollment.repository.EnrollmentRepository;
 import com.wanted.growthmate.learning.course.domain.dto.CourseDetailResponse;
 import com.wanted.growthmate.learning.course.domain.entity.Course;
-import com.wanted.growthmate.learning.course.domain.model.CourseState;
 import com.wanted.growthmate.learning.course.repository.CourseRepository;
 import com.wanted.growthmate.learning.course.service.CourseService;
 import com.wanted.growthmate.learning.lecture.domain.dto.LectureCreateRequest;
@@ -68,7 +67,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 "instructor1",
                 "instructor1@example.com",
                 "password123",
-                Role.ROLE_INSTRUCTOR,
+                Role.INSTRUCTOR,
                 LocalDateTime.now()
         );
         instructor = userRepository.save(instructor);
@@ -77,7 +76,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 "student1",
                 "student1@example.com",
                 "password123",
-                Role.ROLE_STUDENT,
+                Role.STUDENT,
                 LocalDateTime.now()
         );
         student1 = userRepository.save(student1);
@@ -86,7 +85,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 "student2",
                 "student2@example.com",
                 "password123",
-                Role.ROLE_STUDENT,
+                Role.STUDENT,
                 LocalDateTime.now()
         );
         student2 = userRepository.save(student2);
@@ -117,8 +116,9 @@ public class TestDataInitializer implements CommandLineRunner {
         Category category5 = createCategory("데이터 사이언스", "데이터 분석 및 머신러닝", 5);
         category5 = categoryRepository.save(category5);
 
-        // 3. Course 생성
+        // 3. Course 생성 (20개)
         CourseDetailResponse course = courseService.createCourse(
+                "PUBLISHED",
                 instructor.getId(),
                 category1.getId(),
                 "Java 프로그래밍 기초",
@@ -126,26 +126,89 @@ public class TestDataInitializer implements CommandLineRunner {
                 "https://example.com/images/java-course.jpg",
                 50000L
         );
-        // Course를 PUBLISHED 상태로 변경 (리플렉션 사용)
         Course savedCourse = courseRepository.findById(course.getId()).orElseThrow();
-        try {
-            java.lang.reflect.Field stateField = Course.class.getDeclaredField("courseState");
-            stateField.setAccessible(true);
-            stateField.set(savedCourse, CourseState.PUBLISHED);
-            
-            java.lang.reflect.Field createdAtField = Course.class.getDeclaredField("createdAt");
-            createdAtField.setAccessible(true);
-            createdAtField.set(savedCourse, LocalDateTime.now());
-            
-            java.lang.reflect.Field updatedAtField = Course.class.getDeclaredField("updatedAt");
-            updatedAtField.setAccessible(true);
-            updatedAtField.set(savedCourse, LocalDateTime.now());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to update Course state", e);
-        }
-        savedCourse = courseRepository.save(savedCourse);
-        
         Long courseId = savedCourse.getId();
+
+        // 추가 강좌 19개 생성
+        createCourse(instructor.getId(), category1.getId(), "Python 기초 프로그래밍", 
+                "Python 언어의 기초 문법부터 실전 프로젝트까지", 
+                "https://example.com/images/python-course.jpg", 45000L);
+        
+        createCourse(instructor.getId(), category1.getId(), "C++ 고급 프로그래밍", 
+                "C++의 고급 기능과 메모리 관리, STL 활용법", 
+                "https://example.com/images/cpp-course.jpg", 60000L);
+        
+        createCourse(instructor.getId(), category2.getId(), "Spring Boot 완전정복", 
+                "Spring Boot를 활용한 RESTful API 개발과 실전 프로젝트", 
+                "https://example.com/images/springboot-course.jpg", 80000L);
+        
+        createCourse(instructor.getId(), category2.getId(), "React.js 마스터 클래스", 
+                "React.js를 활용한 현대적인 웹 애플리케이션 개발", 
+                "https://example.com/images/react-course.jpg", 75000L);
+        
+        createCourse(instructor.getId(), category2.getId(), "Vue.js 입문부터 실전까지", 
+                "Vue.js 프레임워크를 활용한 프론트엔드 개발", 
+                "https://example.com/images/vue-course.jpg", 55000L);
+        
+        createCourse(instructor.getId(), category2.getId(), "Node.js 백엔드 개발", 
+                "Node.js와 Express를 활용한 서버 사이드 개발", 
+                "https://example.com/images/nodejs-course.jpg", 70000L);
+        
+        createCourse(instructor.getId(), category2.getId(), "Django 웹 개발", 
+                "Python Django 프레임워크로 풀스택 웹 애플리케이션 구축", 
+                "https://example.com/images/django-course.jpg", 65000L);
+        
+        createCourse(instructor.getId(), category3.getId(), "MySQL 데이터베이스 설계", 
+                "MySQL을 활용한 데이터베이스 설계와 최적화 기법", 
+                "https://example.com/images/mysql-course.jpg", 50000L);
+        
+        createCourse(instructor.getId(), category3.getId(), "PostgreSQL 실무 활용", 
+                "PostgreSQL의 고급 기능과 성능 튜닝", 
+                "https://example.com/images/postgresql-course.jpg", 60000L);
+        
+        createCourse(instructor.getId(), category3.getId(), "MongoDB NoSQL 데이터베이스", 
+                "MongoDB를 활용한 NoSQL 데이터베이스 설계와 운영", 
+                "https://example.com/images/mongodb-course.jpg", 55000L);
+        
+        createCourse(instructor.getId(), category4.getId(), "알고리즘 문제 해결 전략", 
+                "코딩 테스트를 위한 알고리즘 문제 해결 기법", 
+                "https://example.com/images/algorithm-course.jpg", 40000L);
+        
+        createCourse(instructor.getId(), category4.getId(), "자료구조 완벽 가이드", 
+                "배열, 리스트, 트리, 그래프 등 핵심 자료구조 학습", 
+                "https://example.com/images/datastructure-course.jpg", 45000L);
+        
+        createCourse(instructor.getId(), category4.getId(), "동적 프로그래밍 마스터", 
+                "DP 알고리즘의 원리와 실전 문제 해결", 
+                "https://example.com/images/dp-course.jpg", 50000L);
+        
+        createCourse(instructor.getId(), category5.getId(), "파이썬 데이터 분석", 
+                "Pandas, NumPy를 활용한 데이터 분석과 시각화", 
+                "https://example.com/images/data-analysis-course.jpg", 70000L);
+        
+        createCourse(instructor.getId(), category5.getId(), "머신러닝 입문", 
+                "Scikit-learn을 활용한 머신러닝 모델 구축", 
+                "https://example.com/images/ml-course.jpg", 90000L);
+        
+        createCourse(instructor.getId(), category5.getId(), "딥러닝 기초", 
+                "TensorFlow와 Keras를 활용한 딥러닝 모델 개발", 
+                "https://example.com/images/deeplearning-course.jpg", 100000L);
+        
+        createCourse(instructor.getId(), category1.getId(), "JavaScript 완전정복", 
+                "ES6+ 문법부터 비동기 프로그래밍까지", 
+                "https://example.com/images/javascript-course.jpg", 50000L);
+        
+        createCourse(instructor.getId(), category2.getId(), "TypeScript 실전 개발", 
+                "TypeScript를 활용한 타입 안전한 웹 개발", 
+                "https://example.com/images/typescript-course.jpg", 60000L);
+        
+        createCourse(instructor.getId(), category2.getId(), "Next.js 풀스택 개발", 
+                "Next.js를 활용한 서버 사이드 렌더링과 API 개발", 
+                "https://example.com/images/nextjs-course.jpg", 85000L);
+        
+        createCourse(instructor.getId(), category3.getId(), "Redis 캐싱 전략", 
+                "Redis를 활용한 캐싱과 세션 관리", 
+                "https://example.com/images/redis-course.jpg", 55000L);
 
         // 섹션 1: Java 기초
         var section1 = sectionService.save(SectionCreateRequest.builder()
@@ -274,13 +337,32 @@ public class TestDataInitializer implements CommandLineRunner {
                 .build());
 
         // 5. Enrollment 생성 (학생 2명이 강좌 수강)
-        Enrollment enrollment1 = new Enrollment(student1.getId(), courseId);
+        // User와 Course 엔티티를 조회하여 Enrollment 생성
+        User savedStudent1 = userRepository.findById(student1.getId()).orElseThrow();
+        User savedStudent2 = userRepository.findById(student2.getId()).orElseThrow();
+        // savedCourse는 이미 위에서 선언되어 있으므로 재사용
+        
+        Enrollment enrollment1 = new Enrollment(savedStudent1, savedCourse);
         enrollment1.setOrderNum(1L);
         enrollmentRepository.save(enrollment1);
 
-        Enrollment enrollment2 = new Enrollment(student2.getId(), courseId);
+        Enrollment enrollment2 = new Enrollment(savedStudent2, savedCourse);
         enrollment2.setOrderNum(1L);
         enrollmentRepository.save(enrollment2);
+    }
+
+    // 강좌 생성 헬퍼 메서드
+    private void createCourse(Long instructorId, Long categoryId, String title, 
+                              String description, String imageUrl, Long pointAmount) {
+        courseService.createCourse(
+                "PUBLISHED",
+                instructorId,
+                categoryId,
+                title,
+                description,
+                imageUrl,
+                pointAmount
+        );
     }
 
     // Category 생성 헬퍼 메서드 (리플렉션 사용)
@@ -308,19 +390,16 @@ public class TestDataInitializer implements CommandLineRunner {
     // Point 생성 헬퍼 메서드 (리플렉션 사용 - protected 생성자 호출)
     private Point createPoint(Long userId, Integer balance) {
         try {
-            // protected 생성자를 리플렉션으로 호출
-            java.lang.reflect.Constructor<Point> constructor = Point.class.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            Point point = constructor.newInstance();
+            // User 엔티티 조회
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
             
-            // 필드 설정
-            java.lang.reflect.Field userIdField = Point.class.getDeclaredField("userId");
-            userIdField.setAccessible(true);
-            userIdField.set(point, userId);
-
-            java.lang.reflect.Field balanceField = Point.class.getDeclaredField("balance");
-            balanceField.setAccessible(true);
-            balanceField.set(point, balance);
+            // Point 생성자 호출 (Point(User user, Integer balance))
+            java.lang.reflect.Constructor<Point> constructor = Point.class.getDeclaredConstructor(
+                    User.class, Integer.class
+            );
+            constructor.setAccessible(true);
+            Point point = constructor.newInstance(user, balance);
 
             return point;
         } catch (Exception e) {

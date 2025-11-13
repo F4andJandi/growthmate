@@ -6,6 +6,7 @@ import com.wanted.growthmate.payment.dto.PointTransactionSummary;
 import com.wanted.growthmate.payment.service.PaymentService;
 import com.wanted.growthmate.payment.service.PointService;
 import com.wanted.growthmate.payment.service.PointTransactionService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -27,9 +29,11 @@ public class PointController {
     private final PaymentService paymentService;
 
     @GetMapping
-    public String getPointTransactionsPage(Model model){
-        // TODO: 임시 사용자 ID -> @Login 으로 대체
-        Long userId =  1L;
+    public String getPointTransactionsPage(Model model, HttpSession session){
+        Long userId = (Long) session.getAttribute("loginUserId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
 
         // 포인트 잔액 조회 (없으면 생성)
         Point point = pointService.getOrCreatePoint(userId);
@@ -46,7 +50,12 @@ public class PointController {
     }
 
     @GetMapping("/charge")
-    public String chargePage(Model model){
+    public String chargePage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        Long userId = (Long) session.getAttribute("loginUserId");
+        if (userId == null) {
+            redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
         model.addAttribute("reqBody", new PointChargeRequest());
         return "points/charge";
     }
@@ -54,21 +63,29 @@ public class PointController {
     @PostMapping("/charge")
     public String chargePoints(
             @Valid @ModelAttribute("reqBody") PointChargeRequest reqBody,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
     ) {
-        // TODO: 임시 사용자 ID -> @Login 으로 대체
-        Long userId =  1L;
-
-        System.out.println(reqBody.getAmount());
-        System.out.println(reqBody.getPaymentMethod());
+        Long userId = (Long) session.getAttribute("loginUserId");
+        if (userId == null) {
+            redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
+            return "redirect:/login";
+        }
 
         // 유효성 검사 실패 시 사용자가 입력하던 페이지로 복귀
         if (bindingResult.hasErrors()) {
             return "points/charge";
         }
 
-        // 포인트 충전
-        paymentService.chargePoints(userId, reqBody);
+        try {
+            // 포인트 충전
+            paymentService.chargePoints(userId, reqBody);
+            redirectAttributes.addFlashAttribute("message", "포인트 충전이 완료되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "포인트 충전에 실패했습니다: " + e.getMessage());
+            return "redirect:/points/charge";
+        }
 
         // 성공 시 포인트 내역 페이지로 리다이렉트
         return "redirect:/points";

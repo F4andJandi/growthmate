@@ -1,7 +1,9 @@
 package com.wanted.growthmate.learning.lecture.controller;
 
+import com.wanted.growthmate.learning.course.service.CourseService;
 import com.wanted.growthmate.learning.lecture.domain.dto.*;
 import com.wanted.growthmate.learning.lecture.service.LectureService;
+import com.wanted.growthmate.learning.section.service.SectionService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,16 +17,30 @@ import java.util.List;
 public class LectureController {
 
     private final LectureService lectureService;
+    private final SectionService sectionService;
+    private final CourseService courseService;
 
-    public LectureController(LectureService lectureService) {
+    public LectureController(LectureService lectureService, SectionService sectionService, CourseService courseService) {
         this.lectureService = lectureService;
+        this.sectionService = sectionService;
+        this.courseService = courseService;
     }
 
     @GetMapping
     public String list(@PathVariable Long sectionId, Model model) {
         List<LectureSummaryResponse> lectures = lectureService.findBySectionId(sectionId);
+        com.wanted.growthmate.learning.section.domain.dto.SectionResponse section = 
+                sectionService.findBySectionId(sectionId);
+        
+        // 강좌 작성자 ID 조회
+        com.wanted.growthmate.learning.course.domain.entity.Course course = 
+                courseService.getCourseById(section.getCourseId());
+        Long courseUserId = course.getUserId();
+        
         model.addAttribute("lectures", lectures);
         model.addAttribute("sectionId", sectionId);
+        model.addAttribute("section", section);
+        model.addAttribute("courseUserId", courseUserId);
         return "lecture/list";
     }
 

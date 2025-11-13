@@ -35,14 +35,21 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserResponseDto> login(
             @Valid @RequestBody UserLoginRequestDto requestDto, HttpSession session) {
+        UserResponseDto responseDto;
+        try {
+            responseDto = userService.login(requestDto);
 
-        UserResponseDto responseDto = userService.login(requestDto);
+            session.setAttribute("loginUserId", responseDto.getId());
+            session.setAttribute("loginUserName", responseDto.getUsername());
+            session.setAttribute("loginUserRole", responseDto.getRole());
+            session.setMaxInactiveInterval(3600);//세션 만료 1시간
 
-        session.setAttribute("loginUserId", responseDto.getId());
-        session.setAttribute("loginUserRole", responseDto.getRole());
-        session.setMaxInactiveInterval(3600);//세션 만료 1시간
+            return ResponseEntity.ok(responseDto);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
 
-        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/logout")
