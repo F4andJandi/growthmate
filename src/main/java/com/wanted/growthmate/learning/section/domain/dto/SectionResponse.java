@@ -16,7 +16,7 @@ public class SectionResponse {
     public static SectionResponse from(Section section) {
         return SectionResponse.builder()
                 .sectionId(section.getId())
-                .courseId(section.getCourseId())
+                .courseId(section.getCourse().getId())
                 .title(section.getTitle())
                 .order(section.getDisplayOrder())
                 .isVisible(section.isVisible())

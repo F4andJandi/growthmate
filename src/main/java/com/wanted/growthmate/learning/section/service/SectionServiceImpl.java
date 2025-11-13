@@ -1,5 +1,7 @@
 package com.wanted.growthmate.learning.section.service;
 
+import com.wanted.growthmate.learning.course.domain.entity.Course;
+import com.wanted.growthmate.learning.course.service.CourseService;
 import com.wanted.growthmate.learning.section.domain.dto.*;
 import com.wanted.growthmate.learning.section.domain.entity.Section;
 import com.wanted.growthmate.learning.section.exception.SectionNotFoundException;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -16,21 +19,33 @@ import java.util.stream.Collectors;
 public class SectionServiceImpl implements SectionService {
 
     private final SectionRepository sectionRepository;
+    private final CourseService courseService;
 
-    public SectionServiceImpl(SectionRepository sectionRepository) {
+    public SectionServiceImpl(SectionRepository sectionRepository, CourseService courseService) {
         this.sectionRepository = sectionRepository;
+        this.courseService = courseService;
     }
 
     @Override
     public SectionResponse save(SectionCreateRequest sectionCreateRequest) {
+        Course course = courseService.getCourse(sectionCreateRequest.getCourseId())
+                .orElseThrow(() -> new NoSuchElementException("아이디에 해당하는 코스가 존재하지 않습니다."));
+        
+        Section section = Section.builder()
+                .course(course)
+                .title(sectionCreateRequest.getTitle())
+                .displayOrder(sectionCreateRequest.getOrder())
+                .isVisible(sectionCreateRequest.isVisible())
+                .build();
+        
         return SectionResponse.from(
-                sectionRepository.save(sectionCreateRequest.toEntity())
+                sectionRepository.save(section)
         );
     }
 
     @Override
     public List<SectionSummaryResponse> findByCourseId(Long courseId) {
-        return sectionRepository.findByCourseIdOrderByDisplayOrderAsc(courseId).stream().map(section ->
+        return sectionRepository.findByCourse_IdOrderByDisplayOrderAsc(courseId).stream().map(section ->
                 SectionSummaryResponse.from(section)
         ).collect(Collectors.toList());
     }
@@ -40,6 +55,12 @@ public class SectionServiceImpl implements SectionService {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new SectionNotFoundException(sectionId));
         return SectionResponse.from(section);
+    }
+
+    @Override
+    public Section getSectionById(Long sectionId) {
+        return sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new SectionNotFoundException(sectionId));
     }
 
     @Override
@@ -56,7 +77,7 @@ public class SectionServiceImpl implements SectionService {
     @Override
     @Transactional
     public SectionResponse updateOrder(Long sectionId, SectionOrderUpdateRequest request) {
-        List<Section> sectionList = sectionRepository.findByCourseId(request.getCourseId()).stream()
+        List<Section> sectionList = sectionRepository.findByCourse_Id(request.getCourseId()).stream()
                 .sorted(Comparator.comparing(Section::getDisplayOrder))
                 .toList();
 

@@ -1,6 +1,7 @@
 package com.wanted.growthmate.learning.section.service;
 
 import com.wanted.growthmate.learning.section.domain.dto.*;
+import com.wanted.growthmate.learning.section.domain.entity.Section;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ public interface SectionService {
     List<SectionSummaryResponse> findByCourseId(Long courseId);
 
     SectionResponse findBySectionId(Long sectionId);
+
+    Section getSectionById(Long sectionId);
 
     SectionResponse updateInfo(Long sectionId, SectionUpdateRequest request);
 
