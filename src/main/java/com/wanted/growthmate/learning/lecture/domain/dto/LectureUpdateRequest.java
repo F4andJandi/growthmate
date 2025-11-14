@@ -21,9 +21,8 @@ public class LectureUpdateRequest {
     @PositiveOrZero(message = "duration은 0 이상이어야 합니다.")
     private Long duration;
 
-    @NotNull(message = "mediaId는 필수 입력 값입니다.")
-    @Positive(message = "mediaId는 1 이상의 정수여야 합니다.")
-    private Long mediaId;
+    @NotBlank(message = "mediaId(동영상 URL)는 필수 입력 값입니다.")
+    private String mediaId;
 
     private Boolean isVisible;
 

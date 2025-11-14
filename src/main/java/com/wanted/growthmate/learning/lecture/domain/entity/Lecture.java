@@ -36,9 +36,9 @@ public class Lecture extends SoftDeleteBaseEntity {
     private Long duration;
 
     @Getter
-    @Column(name = "media_id", nullable = false)
-    @Comment("강의 미디어 ID")
-    private Long mediaId;
+    @Column(name = "media_id", nullable = false, length = 500)
+    @Comment("강의 미디어 URL (동영상 URL)")
+    private String mediaId;
 
     @Setter
     @Getter
@@ -54,7 +54,7 @@ public class Lecture extends SoftDeleteBaseEntity {
     public Lecture() {
     }
 
-    public Lecture(Section section, String title, Long duration, Long mediaId, int order) {
+    public Lecture(Section section, String title, Long duration, String mediaId, int order) {
         this.section = section;
         this.title = title;
         this.duration = duration;

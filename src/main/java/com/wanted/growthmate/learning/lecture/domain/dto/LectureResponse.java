@@ -13,7 +13,7 @@ public class LectureResponse {
     private String title;
     private Long duration;
     private Integer order;
-    private Long mediaId;
+    private String mediaId;
     private boolean isVisible;
 
     public static LectureResponse from(Lecture lecture) {

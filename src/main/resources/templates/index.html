@@ -92,13 +92,20 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
                 
-                <div class="mb-4">
-                    <h2 class="mb-1" th:text="${selectedCategoryName != null ? selectedCategoryName + ' 강좌' : '전체 강좌'}">
-                        전체 강좌
-                    </h2>
-                    <small class="text-muted" th:text="'총 ' + ${#lists.size(courses)} + '개 강좌'">
-                        총 0개 강좌
-                    </small>
+                <div class="mb-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-1" th:text="${selectedCategoryName != null ? selectedCategoryName + ' 강좌' : '전체 강좌'}">
+                            전체 강좌
+                        </h2>
+                        <small class="text-muted" th:text="'총 ' + ${#lists.size(courses)} + '개 강좌'">
+                            총 0개 강좌
+                        </small>
+                    </div>
+                    <div th:if="${loginUserRole != null and (loginUserRole == 'ROLE_INSTRUCTOR' or loginUserRole == 'INSTRUCTOR')}">
+                        <a th:href="@{/instructor/courses/new}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> 강좌개설하기
+                        </a>
+                    </div>
                 </div>
 
                 <!-- 강좌가 없는 경우 -->
@@ -112,12 +119,14 @@
                     <div class="col-12 col-sm-6 col-lg-4 col-xl-3" th:each="course : ${courses}">
                         <div class="card h-100 course-card">
                             <!-- 썸네일 -->
-                            <div th:if="${course.imageUrl != null}">
+                            <div th:if="${course.imageUrl != null and !#strings.isEmpty(course.imageUrl)}">
                                 <img th:src="${course.imageUrl}"
                                      class="card-img-top"
-                                     alt="강좌 썸네일">
+                                     alt="강좌 썸네일"
+                                     style="height: 180px; object-fit: cover;"
+                                     onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'card-img-top d-flex align-items-center justify-content-center bg-light\' style=\'height:180px;\'><i class=\'bi bi-image\' style=\'font-size: 3rem; color: #dee2e6;\'></i></div>';">
                             </div>
-                            <div th:if="${course.imageUrl == null}">
+                            <div th:if="${course.imageUrl == null or #strings.isEmpty(course.imageUrl)}">
                                 <div class="card-img-top d-flex align-items-center justify-content-center bg-light"
                                      style="height:180px;">
                                     <i class="bi bi-image" style="font-size: 3rem; color: #dee2e6;"></i>
@@ -150,7 +159,7 @@
                                         <form th:action="@{/courses/{id}/enroll(id=${course.id})}" 
                                               method="post" 
                                               style="display: inline;"
-                                              th:if="${loginUserId != null and loginUserRole != null and loginUserRole.name() == 'STUDENT'}">
+                                              th:if="${loginUserId != null and loginUserRole != null and loginUserRole == 'STUDENT'}">
                                             <button type="submit" class="btn btn-sm btn-success" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
                                                 <i class="bi bi-bookmark-plus"></i> 신청
                                             </button>

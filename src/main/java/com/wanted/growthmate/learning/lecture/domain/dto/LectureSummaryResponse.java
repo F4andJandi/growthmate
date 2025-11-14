@@ -12,7 +12,7 @@ public class LectureSummaryResponse {
     private Long sectionId;
     private String title;
     private Long duration;
-    private Long mediaId;
+    private String mediaId;
     private Integer order;
     private boolean isVisible;
 

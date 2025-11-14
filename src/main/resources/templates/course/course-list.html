@@ -100,12 +100,14 @@
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3" th:each="course : ${courses}">
                     <div class="card h-100 course-card">
                         <!-- 썸네일 -->
-                        <div th:if="${course.imageUrl != null}">
+                        <div th:if="${course.imageUrl != null and !#strings.isEmpty(course.imageUrl)}">
                             <img th:src="${course.imageUrl}"
                                  class="card-img-top"
-                                 alt="강좌 썸네일">
+                                 alt="강좌 썸네일"
+                                 style="height: 180px; object-fit: cover;"
+                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'card-img-top d-flex align-items-center justify-content-center bg-light\' style=\'height:180px;\'><i class=\'bi bi-image\' style=\'font-size: 3rem; color: #dee2e6;\'></i></div>';">
                         </div>
-                        <div th:if="${course.imageUrl == null}">
+                        <div th:if="${course.imageUrl == null or #strings.isEmpty(course.imageUrl)}">
                             <div class="card-img-top d-flex align-items-center justify-content-center bg-light"
                                  style="height:180px;">
                                 <i class="bi bi-image" style="font-size: 3rem; color: #dee2e6;"></i>

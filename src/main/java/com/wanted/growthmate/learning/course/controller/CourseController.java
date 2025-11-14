@@ -87,6 +87,7 @@ public class CourseController {
     public String createInstructorCourse(@Valid @ModelAttribute("form") CourseCreateRequest request,
                                          BindingResult bindingResult,
                                          @RequestParam String action,
+                                         jakarta.servlet.http.HttpSession session,
                                          Model model) {
         /*if (bindingResult.hasErrors()) {
             // 다시 카테고리 목록 채워서 폼으로 회귀
@@ -95,9 +96,13 @@ public class CourseController {
 
             return "course/course-new"; // 같은 템플릿 다시 보여줌
         }*/
+        Long instructorId = (Long) session.getAttribute("loginUserId");
+        if (instructorId == null) {
+            return "redirect:/login";
+        }
         courseService.createCourse(
                 action,
-                1L,
+                instructorId,
                 request.getCategoryId(),
                 request.getTitle(),
                 request.getDescription(),

@@ -116,99 +116,99 @@ public class TestDataInitializer implements CommandLineRunner {
         Category category5 = createCategory("데이터 사이언스", "데이터 분석 및 머신러닝", 5);
         category5 = categoryRepository.save(category5);
 
-        // 3. Course 생성 (20개)
+        // 3. Course 생성 (20개) - 실제 작동하는 이미지 URL 사용
         CourseDetailResponse course = courseService.createCourse(
                 "PUBLISHED",
                 instructor.getId(),
                 category1.getId(),
                 "Java 프로그래밍 기초",
                 "Java 언어의 기초부터 객체지향 프로그래밍까지 학습하는 강좌입니다.",
-                "https://example.com/images/java-course.jpg",
+                "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=400&h=250&fit=crop",
                 50000L
         );
         Course savedCourse = courseRepository.findById(course.getId()).orElseThrow();
         Long courseId = savedCourse.getId();
 
-        // 추가 강좌 19개 생성
+        // 추가 강좌 19개 생성 - Unsplash 이미지 URL 사용
         createCourse(instructor.getId(), category1.getId(), "Python 기초 프로그래밍", 
                 "Python 언어의 기초 문법부터 실전 프로젝트까지", 
-                "https://example.com/images/python-course.jpg", 45000L);
+                "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400&h=250&fit=crop", 45000L);
         
         createCourse(instructor.getId(), category1.getId(), "C++ 고급 프로그래밍", 
                 "C++의 고급 기능과 메모리 관리, STL 활용법", 
-                "https://example.com/images/cpp-course.jpg", 60000L);
+                "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=250&fit=crop", 60000L);
         
         createCourse(instructor.getId(), category2.getId(), "Spring Boot 완전정복", 
                 "Spring Boot를 활용한 RESTful API 개발과 실전 프로젝트", 
-                "https://example.com/images/springboot-course.jpg", 80000L);
+                "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=250&fit=crop", 80000L);
         
         createCourse(instructor.getId(), category2.getId(), "React.js 마스터 클래스", 
                 "React.js를 활용한 현대적인 웹 애플리케이션 개발", 
-                "https://example.com/images/react-course.jpg", 75000L);
+                "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop", 75000L);
         
         createCourse(instructor.getId(), category2.getId(), "Vue.js 입문부터 실전까지", 
                 "Vue.js 프레임워크를 활용한 프론트엔드 개발", 
-                "https://example.com/images/vue-course.jpg", 55000L);
+                "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=400&h=250&fit=crop", 55000L);
         
         createCourse(instructor.getId(), category2.getId(), "Node.js 백엔드 개발", 
                 "Node.js와 Express를 활용한 서버 사이드 개발", 
-                "https://example.com/images/nodejs-course.jpg", 70000L);
+                "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=400&h=250&fit=crop", 70000L);
         
         createCourse(instructor.getId(), category2.getId(), "Django 웹 개발", 
                 "Python Django 프레임워크로 풀스택 웹 애플리케이션 구축", 
-                "https://example.com/images/django-course.jpg", 65000L);
+                "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=250&fit=crop", 65000L);
         
         createCourse(instructor.getId(), category3.getId(), "MySQL 데이터베이스 설계", 
                 "MySQL을 활용한 데이터베이스 설계와 최적화 기법", 
-                "https://example.com/images/mysql-course.jpg", 50000L);
+                "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=250&fit=crop", 50000L);
         
         createCourse(instructor.getId(), category3.getId(), "PostgreSQL 실무 활용", 
                 "PostgreSQL의 고급 기능과 성능 튜닝", 
-                "https://example.com/images/postgresql-course.jpg", 60000L);
+                "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=250&fit=crop", 60000L);
         
         createCourse(instructor.getId(), category3.getId(), "MongoDB NoSQL 데이터베이스", 
                 "MongoDB를 활용한 NoSQL 데이터베이스 설계와 운영", 
-                "https://example.com/images/mongodb-course.jpg", 55000L);
+                "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=250&fit=crop", 55000L);
         
         createCourse(instructor.getId(), category4.getId(), "알고리즘 문제 해결 전략", 
                 "코딩 테스트를 위한 알고리즘 문제 해결 기법", 
-                "https://example.com/images/algorithm-course.jpg", 40000L);
+                "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=400&h=250&fit=crop", 40000L);
         
         createCourse(instructor.getId(), category4.getId(), "자료구조 완벽 가이드", 
                 "배열, 리스트, 트리, 그래프 등 핵심 자료구조 학습", 
-                "https://example.com/images/datastructure-course.jpg", 45000L);
+                "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop", 45000L);
         
         createCourse(instructor.getId(), category4.getId(), "동적 프로그래밍 마스터", 
                 "DP 알고리즘의 원리와 실전 문제 해결", 
-                "https://example.com/images/dp-course.jpg", 50000L);
+                "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop", 50000L);
         
         createCourse(instructor.getId(), category5.getId(), "파이썬 데이터 분석", 
                 "Pandas, NumPy를 활용한 데이터 분석과 시각화", 
-                "https://example.com/images/data-analysis-course.jpg", 70000L);
+                "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop", 70000L);
         
         createCourse(instructor.getId(), category5.getId(), "머신러닝 입문", 
                 "Scikit-learn을 활용한 머신러닝 모델 구축", 
-                "https://example.com/images/ml-course.jpg", 90000L);
+                "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400&h=250&fit=crop", 90000L);
         
         createCourse(instructor.getId(), category5.getId(), "딥러닝 기초", 
                 "TensorFlow와 Keras를 활용한 딥러닝 모델 개발", 
-                "https://example.com/images/deeplearning-course.jpg", 100000L);
+                "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&h=250&fit=crop", 100000L);
         
         createCourse(instructor.getId(), category1.getId(), "JavaScript 완전정복", 
                 "ES6+ 문법부터 비동기 프로그래밍까지", 
-                "https://example.com/images/javascript-course.jpg", 50000L);
+                "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=400&h=250&fit=crop", 50000L);
         
         createCourse(instructor.getId(), category2.getId(), "TypeScript 실전 개발", 
                 "TypeScript를 활용한 타입 안전한 웹 개발", 
-                "https://example.com/images/typescript-course.jpg", 60000L);
+                "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop", 60000L);
         
         createCourse(instructor.getId(), category2.getId(), "Next.js 풀스택 개발", 
                 "Next.js를 활용한 서버 사이드 렌더링과 API 개발", 
-                "https://example.com/images/nextjs-course.jpg", 85000L);
+                "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=250&fit=crop", 85000L);
         
         createCourse(instructor.getId(), category3.getId(), "Redis 캐싱 전략", 
                 "Redis를 활용한 캐싱과 세션 관리", 
-                "https://example.com/images/redis-course.jpg", 55000L);
+                "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=250&fit=crop", 55000L);
 
         // 섹션 1: Java 기초
         var section1 = sectionService.save(SectionCreateRequest.builder()
@@ -218,12 +218,12 @@ public class TestDataInitializer implements CommandLineRunner {
                 .isVisible(true)
                 .build());
 
-        // 섹션 1의 강의들
+        // 섹션 1의 강의들 - 실제 재생 가능한 동영상 URL 사용
         lectureService.save(LectureCreateRequest.builder()
                 .sectionId(section1.getSectionId())
                 .title("Java 소개")
                 .duration(600L)
-                .mediaId(101L)
+                .mediaId("https://www.youtube.com/embed/eIrMbAQSU34")
                 .order(1)
                 .isVisible(true)
                 .build());
@@ -232,7 +232,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 .sectionId(section1.getSectionId())
                 .title("변수와 데이터 타입")
                 .duration(900L)
-                .mediaId(102L)
+                .mediaId("https://www.youtube.com/embed/8cm1x4bC610")
                 .order(2)
                 .isVisible(true)
                 .build());
@@ -241,7 +241,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 .sectionId(section1.getSectionId())
                 .title("연산자")
                 .duration(750L)
-                .mediaId(103L)
+                .mediaId("https://www.youtube.com/embed/jwtxdm3JDI4")
                 .order(3)
                 .isVisible(true)
                 .build());
@@ -254,12 +254,12 @@ public class TestDataInitializer implements CommandLineRunner {
                 .isVisible(true)
                 .build());
 
-        // 섹션 2의 강의들
+        // 섹션 2의 강의들 - 실제 재생 가능한 동영상 URL 사용
         lectureService.save(LectureCreateRequest.builder()
                 .sectionId(section2.getSectionId())
                 .title("클래스와 객체")
                 .duration(1200L)
-                .mediaId(201L)
+                .mediaId("https://www.youtube.com/embed/jwtxdm3JDI4")
                 .order(1)
                 .isVisible(true)
                 .build());
@@ -268,7 +268,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 .sectionId(section2.getSectionId())
                 .title("상속과 다형성")
                 .duration(1500L)
-                .mediaId(202L)
+                .mediaId("https://www.youtube.com/embed/eIrMbAQSU34")
                 .order(2)
                 .isVisible(true)
                 .build());
@@ -281,12 +281,12 @@ public class TestDataInitializer implements CommandLineRunner {
                 .isVisible(true)
                 .build());
 
-        // 섹션 3의 강의들
+        // 섹션 3의 강의들 - 실제 재생 가능한 동영상 URL 사용
         lectureService.save(LectureCreateRequest.builder()
                 .sectionId(section3.getSectionId())
                 .title("List와 ArrayList")
                 .duration(1000L)
-                .mediaId(301L)
+                .mediaId("https://www.youtube.com/embed/jwtxdm3JDI4")
                 .order(1)
                 .isVisible(true)
                 .build());
@@ -295,7 +295,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 .sectionId(section3.getSectionId())
                 .title("Map과 HashMap")
                 .duration(1100L)
-                .mediaId(302L)
+                .mediaId("https://www.youtube.com/embed/eIrMbAQSU34")
                 .order(2)
                 .isVisible(true)
                 .build());
@@ -304,7 +304,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 .sectionId(section3.getSectionId())
                 .title("Set과 HashSet")
                 .duration(950L)
-                .mediaId(303L)
+                .mediaId("https://www.youtube.com/embed/8cm1x4bC610")
                 .order(3)
                 .isVisible(true)
                 .build());
@@ -317,12 +317,12 @@ public class TestDataInitializer implements CommandLineRunner {
                 .isVisible(true)
                 .build());
 
-        // 섹션 4의 강의들
+        // 섹션 4의 강의들 - 실제 재생 가능한 동영상 URL 사용
         lectureService.save(LectureCreateRequest.builder()
                 .sectionId(section4.getSectionId())
                 .title("try-catch-finally")
                 .duration(800L)
-                .mediaId(401L)
+                .mediaId("https://www.youtube.com/embed/jwtxdm3JDI4")
                 .order(1)
                 .isVisible(true)
                 .build());
@@ -331,7 +331,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 .sectionId(section4.getSectionId())
                 .title("사용자 정의 예외")
                 .duration(700L)
-                .mediaId(402L)
+                .mediaId("https://www.youtube.com/embed/eIrMbAQSU34")
                 .order(2)
                 .isVisible(true)
                 .build());

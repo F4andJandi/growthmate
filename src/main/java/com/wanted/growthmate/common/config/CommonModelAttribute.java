@@ -41,10 +41,18 @@ public class CommonModelAttribute {
     }
 
     @ModelAttribute("loginUserRole")
-    public Object addLoginUserRole(HttpSession session) {
+    public String addLoginUserRole(HttpSession session) {
         if (session == null) {
             return null;
         }
-        return session.getAttribute("loginUserRole");
+        Object role = session.getAttribute("loginUserRole");
+        if (role == null) {
+            return null;
+        }
+        // Role enum인 경우 name()으로 변환, String인 경우 그대로 반환
+        if (role instanceof Enum) {
+            return ((Enum<?>) role).name();
+        }
+        return role.toString();
     }
 }

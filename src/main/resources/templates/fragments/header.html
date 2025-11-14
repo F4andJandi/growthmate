@@ -87,7 +87,10 @@
                         </a>
                     </div>
                     
-                    <div th:if="${loginUserRole == 'ROLE_INSTRUCTOR' or loginUserRole == 'INSTRUCTOR'}">
+                    <div th:if="${loginUserRole != null and (loginUserRole == 'ROLE_INSTRUCTOR' or loginUserRole == 'INSTRUCTOR')}" class="d-flex align-items-center gap-2">
+                        <a th:href="@{/instructor/courses/new}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-circle"></i> 강좌개설하기
+                        </a>
                         <a th:href="@{/instructor/courses}" class="btn btn-sm btn-primary">
                             <i class="bi bi-gear"></i> 강좌 관리
                         </a>

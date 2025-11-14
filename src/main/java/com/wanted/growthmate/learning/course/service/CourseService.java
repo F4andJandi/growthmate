@@ -54,13 +54,15 @@ public class CourseService {
     }
 
     public List<CourseDetailResponse> getCourses() {
-        return courseRepository.findAll().stream()
+        // 메인 페이지에서는 PUBLISHED 상태이고 삭제되지 않은 강좌만 조회
+        return courseRepository.findByCourseStateAndNotDeleted(CourseState.PUBLISHED).stream()
                 .map(CourseDetailResponse::from)
                 .toList();
     }
 
     public List<CourseDetailResponse> getCoursesByCategory(Long categoryId) {
-        return courseRepository.findByCategoryId(categoryId).stream()
+        // 카테고리별 조회도 PUBLISHED 상태이고 삭제되지 않은 강좌만 조회
+        return courseRepository.findByCategoryIdAndCourseStateAndNotDeleted(categoryId, CourseState.PUBLISHED).stream()
                 .map(CourseDetailResponse::from)
                 .toList();
     }
