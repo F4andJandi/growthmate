@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>강좌 관리</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">강좌 관리</h1>
+        <!-- 강좌 개설하기 버튼 -->
+        <a href="/instructor/courses/new" class="btn btn-primary">
+            강좌 개설하기
+        </a>
+    </div>
+
+    <!-- 개설된 강좌가 없을 때 -->
+    <div th:if="${#lists.isEmpty(courses)}" class="alert alert-secondary text-center">
+        개설된 강좌가 없습니다.
+    </div>
+
+    <!-- 개설된 강좌 목록 -->
+    <div th:if="${!#lists.isEmpty(courses)}" class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col" th:each="course : ${courses}">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0" th:text="${course.title}">강좌 제목</h5>
+
+                        <!-- 상태 뱃지: DRAFT -> 작성중, PUBLISHED -> 게시완료 -->
+                        <span class="badge"
+                              th:classappend="${course.status} == 'DRAFT' ? ' bg-secondary' : ' bg-success'"
+                              th:text="${course.status} == 'DRAFT' ? '작성중' : '게시완료'">
+                            작성중
+                        </span>
+                    </div>
+
+                    <p class="card-text text-muted small"
+                       th:text="${course.description}">
+                        강좌 설명이 들어갑니다.
+                    </p>
+                </div>
+
+                <!-- 게시 전(DRAFT)인 경우에만 수정/삭제 버튼 노출 -->
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <div class="d-flex justify-content-end gap-2"
+                         th:if="${course.status} == 'DRAFT'">
+                        <a th:href="@{'/instructor/courses/' + ${course.id} + '/edit'}"
+                           class="btn btn-sm btn-outline-primary">
+                            수정
+                        </a>
+
+                        <form th:action="@{'/instructor/courses/' + ${course.id} + '/delete'}"
+                              method="post" class="m-0">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                삭제
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- each -->
+    </div>
+</div>
+</body>
+</html>

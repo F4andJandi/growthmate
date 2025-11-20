@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>강좌 순서 편집</title>
+</head>
+<body>
+<h1>내 강좌 편집</h1>
+<a href="/enrollment/myList">← 돌아가기</a>
+<hr>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>순서</th>
+        <th>강좌명</th>
+        <th>액션</th>
+    </tr>
+    <tr th:each="enroll : ${enrollments}">
+        <td th:text="${enroll.orderNum}"></td>
+        <!-- courseId 대신 course.title 또는 course.id 사용 -->
+        <td th:text="${enroll.course.title}"></td>
+        <td>
+            <form th:action="@{/enrollment/change-order}" method="post" style="display:inline;">
+                <input type="hidden" name="enrollmentId" th:value="${enroll.id}">
+                <input type="number" name="newOrderNum" placeholder="새 순서" min="1"
+                       th:max="${#lists.size(enrollments)}">
+                <button type="submit">순서 변경</button>
+            </form>
+
+            <form th:action="@{/enrollment/hide}" method="post" style="display:inline;">
+                <input type="hidden" name="enrollmentId" th:value="${enroll.id}">
+                <button type="submit">강좌 숨기기</button>
+            </form>
+
+            <form th:action="@{/enrollment/refund}" method="post" style="display:inline;">
+                <input type="hidden" name="enrollmentId" th:value="${enroll.id}">
+                <button type="submit">강좌 환불</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,8 @@
+### 등록
+POST http://localhost:8080/enrollment/addEnrollment
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "courseId": 5
+}

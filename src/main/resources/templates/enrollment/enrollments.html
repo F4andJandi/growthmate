@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 강좌 목록</title>
+</head>
+<body>
+<h1 th:text="|${userId}님의 수강중인 강좌 목록|"></h1>
+<a href="/enrollment/edit">[Edit]</a>
+<a href="/enrollment/hiddenList">[숨김 강좌 보기]</a>
+
+<ul>
+    <li th:each="enroll : ${enrollments}">
+        <span th:text="|(${enroll.orderNum}) ${enroll.course.title}|"></span>
+        <a th:href="@{|/courses/${enroll.course.id}|}">[선택]</a>    </li>
+</ul>
+
+</body>
+</html>

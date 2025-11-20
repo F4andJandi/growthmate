@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>섹션 상세 - [[${section.title}]]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .lecture-item {
+            transition: all 0.3s;
+            border-left: 3px solid #0d6efd;
+        }
+        .lecture-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+        .order-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- 메시지 표시 -->
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            [[${message}]]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- 섹션 정보 -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-bookmark"></i> [[${section.title}]]
+                </h4>
+                <div>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editSectionModal">
+                        <i class="bi bi-pencil"></i> 수정
+                    </button>
+                    <a th:href="@{/sections}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> 목록
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-0">
+                    <i class="bi bi-info-circle"></i> 강좌 ID: [[${section.courseId}]] | 
+                    순서: [[${section.order}]] | 
+                    노출: <span th:if="${section.isVisible}" class="text-success">활성</span>
+                    <span th:unless="${section.isVisible}" class="text-danger">비활성</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- 강의 목록 헤더 -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5><i class="bi bi-list-ul"></i> 강의 목록</h5>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLectureModal">
+                <i class="bi bi-plus-circle"></i> 강의 추가
+            </button>
+        </div>
+
+        <!-- 강의 리스트 -->
+        <div class="row" id="lectureList">
+            <div class="col-12 mb-3" th:each="lecture : ${lectures}">
+                <div class="card lecture-item">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="order-badge me-3">[[${lecture.order}]]</div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">[[${lecture.title}]]</h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i> [[${lecture.duration}]]초 | 
+                                    <i class="bi bi-eye"></i> 
+                                    <span th:if="${lecture.isVisible}" class="text-success">활성</span>
+                                    <span th:unless="${lecture.isVisible}" class="text-danger">비활성</span>
+                                </small>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary" 
+                                        th:onclick="'openEditModal(' + ${lecture.lectureId} + ')'">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning" 
+                                        th:onclick="'openOrderModal(' + ${lecture.lectureId} + ', ' + ${lecture.order} + ')'">
+                                    <i class="bi bi-arrow-up-down"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" 
+                                        th:onclick="'deleteLecture(' + ${lecture.lectureId} + ')'">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" th:if="${#lists.isEmpty(lectures)}">
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-inbox"></i> 등록된 강의가 없습니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 강의 생성 모달 -->
+    <div class="modal fade" id="createLectureModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/sections/{sectionId}/lectures(sectionId=${section.sectionId})}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-plus-circle"></i> 강의 생성</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="courseId" th:value="${section.courseId}">
+                        <input type="hidden" name="sectionId" th:value="${section.sectionId}">
+                        <div class="mb-3">
+                            <label class="form-label">강의 제목</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">강의 길이 (초)</label>
+                            <input type="number" class="form-control" name="duration" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">미디어 ID</label>
+                            <input type="number" class="form-control" name="mediaId" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">순서</label>
+                            <input type="number" class="form-control" name="order" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="hidden" name="isVisible" value="false">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="isVisible" value="true" checked>
+                                <label class="form-check-label">노출 활성화</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">생성</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 강의 수정 모달 -->
+    <div class="modal fade" id="editLectureModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editLectureForm" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-pencil"></i> 강의 수정</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="sectionId" id="editSectionId">
+                        <div class="mb-3">
+                            <label class="form-label">강의 제목</label>
+                            <input type="text" class="form-control" name="title" id="editTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">강의 길이 (초)</label>
+                            <input type="number" class="form-control" name="duration" id="editDuration" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">미디어 ID</label>
+                            <input type="number" class="form-control" name="mediaId" id="editMediaId" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="editIsVisible">
+                                <label class="form-check-label">노출 활성화</label>
+                            </div>
+                            <input type="hidden" name="isVisible" id="editIsVisibleHidden" value="false">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary" onclick="updateIsVisibleBeforeSubmit(event)">수정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 순서 변경 모달 -->
+    <div class="modal fade" id="orderLectureModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="orderLectureForm" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-arrow-up-down"></i> 순서 변경</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="sectionId" th:value="${section.sectionId}">
+                        <div class="mb-3">
+                            <label class="form-label">변경할 순서</label>
+                            <input type="number" class="form-control" name="newOrder" id="newOrder" min="1" required>
+                            <small class="text-muted">현재 순서와 교환할 순서를 입력하세요.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-warning">변경</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 섹션 수정 모달 -->
+    <div class="modal fade" id="editSectionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/sections/{sectionId}/update(sectionId=${section.sectionId})}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-pencil"></i> 섹션 수정</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">섹션 제목</label>
+                            <input type="text" class="form-control" name="title" th:value="${section.title}" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="hidden" name="isVisible" value="false">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="isVisible" value="true" th:checked="${section.isVisible}">
+                                <label class="form-check-label">노출 활성화</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">수정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        const sectionId = /*[[${section.sectionId}]]*/ null;
+        const lectures = /*[[${lectures}]]*/ [];
+
+        function openEditModal(lectureId) {
+            const lecture = lectures.find(l => l.lectureId === lectureId);
+            if (lecture) {
+                document.getElementById('editLectureForm').action = '/sections/' + sectionId + '/lectures/' + lectureId + '/update';
+                document.getElementById('editSectionId').value = lecture.sectionId;
+                document.getElementById('editTitle').value = lecture.title;
+                document.getElementById('editDuration').value = lecture.duration;
+                document.getElementById('editMediaId').value = lecture.mediaId;
+                document.getElementById('editIsVisible').checked = lecture.isVisible;
+                new bootstrap.Modal(document.getElementById('editLectureModal')).show();
+            }
+        }
+
+        function openOrderModal(lectureId, currentOrder) {
+            document.getElementById('orderLectureForm').action = '/sections/' + sectionId + '/lectures/' + lectureId + '/order';
+            document.getElementById('newOrder').value = '';
+            new bootstrap.Modal(document.getElementById('orderLectureModal')).show();
+        }
+
+        function deleteLecture(lectureId) {
+            if (confirm('정말 삭제하시겠습니까?')) {
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/sections/' + sectionId + '/lectures/' + lectureId + '/delete';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function updateIsVisibleBeforeSubmit(event) {
+            const checkbox = document.getElementById('editIsVisible');
+            const hidden = document.getElementById('editIsVisibleHidden');
+            hidden.value = checkbox.checked ? 'true' : 'false';
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>숨김 강좌 목록</title>
+</head>
+<body>
+<h1 th:text="${userId} + '님의 숨김 강좌 목록'"></h1>
+<a href="/enrollment/myList">← 돌아가기</a>
+<hr>
+
+<ul>
+    <li th:each="enroll : ${enrollments}">
+        <!-- courseId 대신 course.title 또는 course.id 사용 -->
+        <span th:text="${enroll.course.title}"></span>
+        <a th:href="@{'/courses/' + ${enroll.course.id}}">[강좌 선택]</a>
+
+        <!-- ✅ 복구 버튼 (POST 방식) -->
+        <form th:action="@{/enrollment/restore}" method="post" style="display:inline;">
+            <input type="hidden" name="enrollmentId" th:value="${enroll.id}">
+            <button type="submit">[강좌 복구]</button>
+        </form>
+    </li>
+</ul>
+
+</body>
+</html>

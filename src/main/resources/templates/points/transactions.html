@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>포인트 내역</title>
+<!--  <link rel="stylesheet" href="/css/style.css">-->
+</head>
+<body>
+<h1>포인트 내역</h1>
+
+<div>
+  <p>현재 포인트: <strong th:text="${currentPoints} + ' P'">0 P</strong></p>
+  <a th:href="@{/points/charge}">
+    <button>충전하기</button>
+  </a>
+</div>
+
+<h2>전체 내역</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>날짜</th>
+    <th>설명</th>
+    <th>금액</th>
+    <th>잔액</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="pointTransaction : ${pointTransactions}">
+    <td th:text="${pointTransaction.getCreatedAt()}"></td>
+    <td th:text="${pointTransaction.getDescription()}"></td>
+    <td th:text="${pointTransaction.getAmount()}"></td>
+    <td th:text="${pointTransaction.getBalanceAfter()}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
