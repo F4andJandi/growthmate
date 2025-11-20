@@ -6,6 +6,8 @@ import com.wanted.growthmate.learning.course.domain.dto.CourseCreateRequest;
 import com.wanted.growthmate.learning.course.domain.dto.CourseDetailResponse;
 import com.wanted.growthmate.learning.course.domain.model.CourseEdit;
 import com.wanted.growthmate.learning.course.domain.model.CourseState;
+import com.wanted.growthmate.learning.course.exception.CourseNotFound;
+import com.wanted.growthmate.learning.course.repository.CourseRepository;
 import com.wanted.growthmate.learning.course.service.CourseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ class CourseServiceTest {
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     @Test
     void 강좌_생성() throws Exception {
@@ -127,11 +132,9 @@ class CourseServiceTest {
 
         courseService.deleteCourse(course.getId());
 
-
-
-        assertThat(courseService.getCourse(course.getId())).isEmpty();
-
-
+        Course findCourse = courseRepository.findById(course.getId())
+                .orElseThrow(() -> new CourseNotFound("Course not found with id: " + course.getId()));
+        assertThat(findCourse.isDeleted()).isTrue();
     }
 
     @Test
